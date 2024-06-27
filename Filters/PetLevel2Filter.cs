@@ -157,8 +157,6 @@ namespace Coflnet.Sky.Filter
                 }
                 else
                     return new PetLevelOldFilter().GetExpression(args);
-            if(!args.TargetsDB)
-                return Coflnet.Sky.Filter.PredicateBuilder.And(base.GetExpression(args), a => (a as SaveAuction).FlatenedNBT.Any(b => b.Key == "candyUsed"));
             var keyId = NBT.Instance.GetKeyId("candyUsed"); // makes sure this is actually a pet
             return base.GetExpression(args).And(a => a.NBTLookup.Any(b => b.KeyId == keyId));
         }
