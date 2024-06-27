@@ -137,29 +137,7 @@ namespace Coflnet.Sky.Filter
             5555,
             1886700 // for all remaining levels
         };
-        public override Expression<Func<IDbItem, long>> GetSelector(FilterArgs args)
-        {
-            if (ShoulParseFromName(args))
-                return a => a.ItemName != null && nameRegex.IsMatch(a.ItemName) ? int.Parse(nameRegex.Match(a.ItemName).Groups[1].Value) : -1;
-            if(!args.TargetsDB)
-                return a => (a as SaveAuction).FlatenedNBT.Where(n => n.Key == "exp").Select(n => (long)double.Parse(n.Value)).FirstOrDefault();
-            var keyId = NBT.Instance.GetKeyId("exp");
-            return a => a.NBTLookup.Where(a => a.KeyId == keyId).Select(a => a.Value).FirstOrDefault();
-        }
-
-        public override Expression<Func<IDbItem, bool>> GetExpression(FilterArgs args)
-        {
-            if (new char[] { 'X', 'x', '_' }.Any(i => args.Get(this).Contains(i)) || !args.TryGet(new RarityFilter(), out _))
-                if (new char[] { '>', '<', '-' }.Any(i => args.Get(this).Contains(i)))
-                {
-                    if (args.TargetsDB)
-                        throw new CoflnetException("invalid_filter", "You need to select a rarity to use pet ranges");
-                }
-                else
-                    return new PetLevelOldFilter().GetExpression(args);
-            var keyId = NBT.Instance.GetKeyId("candyUsed"); // makes sure this is actually a pet
-            return base.GetExpression(args).And(a => a.NBTLookup.Any(b => b.KeyId == keyId));
-        }
+        
 
         public override long GetLowerBound(FilterArgs args, long input)
         {
